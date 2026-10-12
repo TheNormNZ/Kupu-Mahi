@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Level 3 Mahi Kāinga Quiz</title>
+    <style>
+        :root {
+            --pango: #1a1a1a;    /* Deep Charcoal Black */
+            --kokowai: #a62b2b;  /* Ochre Red */
+            --ma: #ffffff;       /* Pure White */
+            --kowhai: #f39c12;   /* Accent Gold/Yellow */
+            --kirimi: #fcfbf7;   /* Soft Flax/Cream Background */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--kirimi);
+            color: var(--pango);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--ma);
+            border-left: 3px solid var(--pango);
+            border-right: 3px solid var(--pango);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Taniko-Inspired Geometric Border Header Accent */
+        .taniko-header {
+            background-color: var(--pango);
+            background-image: 
+                linear-gradient(45deg, var(--kokowai) 25%, transparent 25%, transparent 75%, var(--kokowai) 75%),
+                linear-gradient(45deg, var(--kokowai) 25%, var(--pango) 25%, var(--pango) 75%, var(--kokowai) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            height: 24px;
+            width: 100%;
+            border-bottom: 4px solid var(--kokowai);
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            padding: 20px 16px 50px 16px;
+            flex: 1 0 auto;
+        }
+
+        h2 { 
+            color: var(--pango); 
+            text-align: center; 
+            margin-top: 5px;
+            margin-bottom: 5px; 
+            font-size: clamp(1.5em, 5vw, 2em);
+            letter-spacing: 0.5px;
+        }
+        
+        .subtitle { 
+            text-align: center; 
+            color: var(--kokowai); 
+            margin-bottom: 20px; 
+            font-size: clamp(0.95em, 3.5vw, 1.1em); 
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Configuration Panel Setup */
+        .setup-box {
+            background-color: #faf8f5;
+            border: 2px solid var(--pango);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .setup-row {
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        .setup-row label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: var(--pango);
+            font-size: 0.95em;
+        }
+        .setup-row select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+            border-radius: 6px;
+            border: 2px solid var(--pango);
+            outline: none;
+            background-color: var(--ma);
+        }
+        
+        /* Mode Switcher Styles */
+        .mode-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .mode-btn {
+            flex: 1;
+            max-width: 180px;
+            background-color: #e5e0d8;
+            border: 2px solid transparent;
+            color: var(--pango);
+            padding: 10px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9em;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background-color: var(--pango);
+            color: var(--ma);
+            border-color: var(--kokowai);
+        }
+
+        .progress-bar {
+            background-color: #e5e0d8;
+            border-radius: 10px;
+            height: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: none;
+            border: 1px solid var(--pango);
+        }
+        .progress {
+            background-color: var(--kokowai);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .quiz-box { display: none; }
+        
+        .question-tag {
+            text-align: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: var(--kokowai);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .question-text {
+            font-size: clamp(1.1em, 4.5vw, 1.4em);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--pango);
+            word-wrap: break-word;
+        }
+        
+        /* Multiple Choice Options */
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .option-btn {
+            background-color: var(--ma);
+            border: 2px solid var(--pango);
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: clamp(0.95em, 3.8vw, 1.05em);
+            font-weight: 600;
+            transition: all 0.2s;
+            text-align: left;
+            color: var(--pango);
+            width: 100%;
+            word-wrap: break-word;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #fdfaf4;
+            border-color: var(--kokowai);
+        }
+        .option-btn.correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+            font-weight: bold;
+        }
+        .option-btn.wrong {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+
+        /* Text Input Layout */
+        .text-input-container {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .text-input {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.05em;
+            border: 2px solid var(--pango);
+            border-radius: 8px;
+            outline: none;
+            background-color: var(--ma);
+        }
+        .text-input:focus {
+            border-color: var(--kokowai);
+        }
+        .feedback-msg {
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: center;
+            margin: 10px 0;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+        .feedback-msg.correct { color: #28a745; }
+        .feedback-msg.wrong { color: var(--kokowai); }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 16px;
+            border: 2px solid var(--pango);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        .btn-start-quiz { 
+            background-color: var(--kokowai); 
+            color: var(--ma); 
+            width: 100%; 
+            font-size: 1.1em; 
+            margin-top: 10px;
+            padding: 12px;
+            border: 2px solid var(--pango);
+        }
+        .btn-restart { background-color: var(--ma); color: var(--pango); white-space: nowrap; }
+        .btn-next { background-color: var(--pango); color: var(--ma); display: none; border-color: var(--pango); white-space: nowrap; }
+        .score-display { font-weight: 700; color: var(--pango); font-size: 0.9em; white-space: nowrap; }
+        
+        .results-box { display: none; text-align: center; padding: 15px; }
+        .results-box h3 { font-size: 1.8em; color: var(--pango); margin-top: 0; }
+        .score-big { font-size: 3em; font-weight: 900; color: var(--kokowai); margin: 15px 0; }
+        
+        .review-banner {
+            background-color: #fff3cd;
+            border: 2px dashed #ffc107;
+            color: #856404;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        /* Footer Taniko Strip */
+        .taniko-footer {
+            background-color: var(--pango);
+            background-image: 
+                linear-gradient(45deg, var(--kokowai) 25%, transparent 25%, transparent 75%, var(--kokowai) 75%),
+                linear-gradient(45deg, var(--kokowai) 25%, var(--pango) 25%, var(--pango) 75%, var(--kokowai) 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            height: 14px;
+            width: 100%;
+            border-top: 2px solid var(--kokowai);
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        /* User Stamp */
+        .user-stamp {
+            position: absolute;
+            bottom: 18px;
+            right: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            color: var(--kokowai);
+            opacity: 0.85;
+            letter-spacing: 0.5px;
+            background-color: var(--ma);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="taniko-header"></div>
+
+    <div class="main-content">
+        <h2>L3 Mahi Kāinga</h2>
+        <div class="subtitle">Kupu Mahi Vocabulary Practice</div>
+
+        <!-- Length & Direction Selection View -->
+        <div id="setup-view" class="setup-box">
+            <div class="setup-row">
+                <label for="section-filter">Vocabulary Set Focus:</label>
+                <select id="section-filter">
+                    <option value="all" selected>All Sections (Action 1 + Action 2)</option>
+                    <option value="action1">Action 1 (Kupu Mahi - 95 words)</option>
+                    <option value="action2">Action 2 (Kupu Mahi - 94 words)</option>
+                </select>
+            </div>
+
+            <div class="setup-row">
+                <label for="quiz-direction">Quiz Focus Perspective:</label>
+                <select id="quiz-direction">
+                    <option value="mori_ans" selected>Only Māori Answers (What is the Māori word for... ?)</option>
+                    <option value="eng_ans">Only English Answers (What does this Māori word mean?)</option>
+                    <option value="all">Mix Both Directions (Māori ⇄ English)</option>
+                </select>
+            </div>
+            
+            <div class="setup-row">
+                <label for="question-count">How many questions would you like to answer?</label>
+                <select id="question-count">
+                    <option value="10">10 Questions (Quick Sprint)</option>
+                    <option value="20">20 Questions</option>
+                    <option value="50">50 Questions</option>
+                    <option value="all" selected>All Available Questions</option>
+                </select>
+            </div>
+            <button class="btn btn-start-quiz" onclick="startConfiguredQuiz()">Start Custom Quiz</button>
+        </div>
+
+        <div class="mode-container">
+            <button id="mode-choice" class="mode-btn active" onclick="switchMode('choice')">Multiple Choice</button>
+            <button id="mode-text" class="mode-btn" onclick="switchMode('text')">Text Input</button>
+        </div>
+
+        <div id="review-alert" class="review-banner">🧺 Spaced Repetition: Review Basket Active!</div>
+
+        <div id="quiz-progress-bar" class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+
+        <!-- Quiz Panel -->
+        <div id="quiz-box" class="quiz-box">
+            <div id="tag" class="question-tag"></div>
+            <div id="question" class="question-text">Loading question...</div>
+            
+            <!-- View 1: Multiple Choice Options -->
+            <div id="options-view" class="options-container"></div>
+            
+            <!-- View 2: Text Input Field -->
+            <div id="text-view" class="text-input-container">
+                <input type="text" id="user-typed-answer" class="text-input" placeholder="Type your answer here..." autocomplete="off">
+                <div id="text-feedback" class="feedback-msg"></div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-restart" onclick="showSetupScreen()">Restart Quiz</button>
+                <span id="score-tracker" class="score-display">Score: 0/0</span>
+                <button id="next-btn" class="btn btn-next" onclick="nextQuestion()">Next Question →</button>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div id="results-box" class="results-box">
+            <h3>Quiz Complete!</h3>
+            <div id="final-score" class="score-big">0 / 0</div>
+            <p id="feedback-text"></p>
+            <button id="basket-btn" class="btn btn-start-quiz" style="margin-top: 20px;" onclick="startBasketRound()">Review Missed Words</button>
+            <button id="reset-final-btn" class="btn btn-restart" style="margin-top: 10px; width:100%; border: 2px solid var(--pango);" onclick="showSetupScreen()">Try Another Whole Round</button>
+        </div>
+    </div>
+
+    <div class="user-stamp">Norm Reid</div>
+    <div class="taniko-footer"></div>
+
+    <script>
+        const action1Data = [
+            {"maori": "Whakautu", "english": "Answer"},
+            {"maori": "Whakatata", "english": "Approach"},
+            {"maori": "Pātai", "english": "Ask"},
+            {"maori": "Auau", "english": "Bark"},
+            {"maori": "Pakanga", "english": "Battle"},
+            {"maori": "Kōhua", "english": "Boil"},
+            {"maori": "Hanga", "english": "Build"},
+            {"maori": "Karanga", "english": "Call (out)"},
+            {"maori": "Waea", "english": "Call (phone)"},
+            {"maori": "Hari", "english": "Carry"},
+            {"maori": "Wero", "english": "Challenge"},
+            {"maori": "Whai", "english": "Chase"},
+            {"maori": "Pakipaki", "english": "Clap"},
+            {"maori": "Whakapaipai", "english": "Clean"},
+            {"maori": "Piki", "english": "Climb"},
+            {"maori": "Kati", "english": "Close"},
+            {"maori": "Tunu", "english": "Cook"},
+            {"maori": "Whakatika", "english": "Correct (Something)"},
+            {"maori": "Tangi", "english": "Cry"},
+            {"maori": "Tapahi", "english": "Cut"},
+            {"maori": "Wehe atu", "english": "Depart"},
+            {"maori": "Wawata", "english": "Desire"},
+            {"maori": "Kari", "english": "Dig"},
+            {"maori": "Ruku", "english": "Dive"},
+            {"maori": "Mahi", "english": "Do"},
+            {"maori": "Tā", "english": "Draw"},
+            {"maori": "Inu/Unu", "english": "Drink"},
+            {"maori": "Kai", "english": "Eat"},
+            {"maori": "Awhi", "english": "Embrace"},
+            {"maori": "Whakamārama", "english": "Explain"},
+            {"maori": "Pahū", "english": "Explode"},
+            {"maori": "Tiki", "english": "Fetch"},
+            {"maori": "Whawhai", "english": "Fight"},
+            {"maori": "Whakakī", "english": "Fill up"},
+            {"maori": "Whakatika", "english": "Fix"},
+            {"maori": "Rere", "english": "Fly"},
+            {"maori": "Parai", "english": "Fry"},
+            {"maori": "Kohikohi", "english": "Gather (Things)"},
+            {"maori": "Whaō", "english": "Demolish (Food)"},
+            {"maori": "Tipu/Whakatipu", "english": "Grow"},
+            {"maori": "Whakairi", "english": "Hang"},
+            {"maori": "Rongo", "english": "Hear"},
+            {"maori": "Āwhina", "english": "Help"},
+            {"maori": "Patu", "english": "Hit"},
+            {"maori": "Pupuri", "english": "Hold"},
+            {"maori": "Awhi", "english": "Hug"},
+            {"maori": "Peke", "english": "Jump"},
+            {"maori": "Katakata", "english": "Laugh"},
+            {"maori": "Ako", "english": "Learn"},
+            {"maori": "Whakarongo", "english": "Listen"},
+            {"maori": "Titiro", "english": "Look"},
+            {"maori": "Waihanga", "english": "Make"},
+            {"maori": "Neke", "english": "Move"},
+            {"maori": "Whakatuwhera", "english": "Open"},
+            {"maori": "Hoe", "english": "Paddle"},
+            {"maori": "Kini", "english": "Pinch"},
+            {"maori": "Tākaro", "english": "Play"},
+            {"maori": "Ruku", "english": "Plunge"},
+            {"maori": "Tohu", "english": "Point"},
+            {"maori": "Patu", "english": "Punch"},
+            {"maori": "Pānui", "english": "Read"},
+            {"maori": "Tango", "english": "Remove"},
+            {"maori": "Rangahau", "english": "Research"},
+            {"maori": "Whakahoki", "english": "Return"},
+            {"maori": "Oma", "english": "Run"},
+            {"maori": "Kimi", "english": "Search"},
+            {"maori": "Tuku", "english": "Send"},
+            {"maori": "Whakawehe", "english": "Separate"},
+            {"maori": "Tui", "english": "Sew"},
+            {"maori": "Whiti", "english": "Shine"},
+            {"maori": "Waiata", "english": "Sing"},
+            {"maori": "Noho", "english": "Sit"},
+            {"maori": "Mawhiti", "english": "Skip"},
+            {"maori": "Paki", "english": "Slap"},
+            {"maori": "Menemene", "english": "Smile"},
+            {"maori": "Kōrero", "english": "Speak"},
+            {"maori": "Tāhae", "english": "Steal"},
+            {"maori": "Toro", "english": "Stretch"},
+            {"maori": "Tahitahi", "english": "Sweep/Broom"},
+            {"maori": "Kaukau", "english": "Swim"},
+            {"maori": "Tārere", "english": "Swing (playground)"},
+            {"maori": "Pā tuhituhi", "english": "Text"},
+            {"maori": "Pā", "english": "Touch"},
+            {"maori": "Takahi", "english": "Trample"},
+            {"maori": "Whakaweto", "english": "Turn Off"},
+            {"maori": "Whakakā", "english": "Turn On"},
+            {"maori": "Aro", "english": "Turn towards"},
+            {"maori": "Ruaki", "english": "Vomit"},
+            {"maori": "Oho", "english": "Wake up"},
+            {"maori": "Hīkoi", "english": "Walk"},
+            {"maori": "Pīrangi", "english": "Want"},
+            {"maori": "Horoi", "english": "Wash"},
+            {"maori": "Raranga", "english": "Weave"},
+            {"maori": "Tākai", "english": "Wrap"},
+            {"maori": "Tuhituhi", "english": "Write"}
+        ];
+
+        const action2Data = [
+            {"maori": "Tāpiri", "english": "Add"},
+            {"maori": "Whakanikoniko", "english": "Adorn"},
+            {"maori": "Tautohetohe", "english": "Argue (Debate)"},
+            {"maori": "Tae", "english": "Arrive"},
+            {"maori": "Whakapiko", "english": "Bend"},
+            {"maori": "Ngau", "english": "Bite"},
+            {"maori": "Papahū", "english": "Burst into flames"},
+            {"maori": "Hoko (mai)", "english": "Buy"},
+            {"maori": "Whakairo", "english": "Carve"},
+            {"maori": "Hopu", "english": "Catch"},
+            {"maori": "Panoni", "english": "Change"},
+            {"maori": "Whai", "english": "Chase"},
+            {"maori": "Whānako", "english": "Cheat"},
+            {"maori": "Whakatoi", "english": "Cheeky (to someone)"},
+            {"maori": "Eke", "english": "Climb/get on to something"},
+            {"maori": "Ngoi", "english": "Crawl"},
+            {"maori": "Kanikani", "english": "Dance"},
+            {"maori": "Ākiri", "english": "Discard (Throw away)"},
+            {"maori": "Taraiwa", "english": "Drive"},
+            {"maori": "Akiaki", "english": "Encourage"},
+            {"maori": "Whakauwhi", "english": "Entertain (Hospitality)"},
+            {"maori": "Korikori Tinana", "english": "Exercise"},
+            {"maori": "Pātero", "english": "Fart (Loud)"},
+            {"maori": "Pīhau", "english": "Fart (Silent but violent)"},
+            {"maori": "Whāngai", "english": "Feed"},
+            {"maori": "Whakareri", "english": "Get ready"},
+            {"maori": "Hoatu", "english": "Give (away from me)"},
+            {"maori": "Homai", "english": "Give (towards me)"},
+            {"maori": "Whakarapa", "english": "Glue"},
+            {"maori": "Heke", "english": "Go down"},
+            {"maori": "Pahupahu", "english": "Gossip/Rave on"},
+            {"maori": "Whakawhetai", "english": "Grateful"},
+            {"maori": "Kōhete", "english": "Growl"},
+            {"maori": "Rongo", "english": "Hear (All senses)"},
+            {"maori": "Whāwhai", "english": "Hurry (to be)"},
+            {"maori": "Whana", "english": "Kick"},
+            {"maori": "Mōhio", "english": "Know"},
+            {"maori": "Waiho", "english": "Leave"},
+            {"maori": "Rūkahu", "english": "Lie"},
+            {"maori": "Hiki", "english": "Lift (something)"},
+            {"maori": "Tiaki", "english": "Look after"},
+            {"maori": "Mirimiri", "english": "Massage"},
+            {"maori": "Raweke", "english": "Meddle with"},
+            {"maori": "Kōnatunatu", "english": "Mix"},
+            {"maori": "Amuamu", "english": "Moan"},
+            {"maori": "Whakapakepake", "english": "Motivate"},
+            {"maori": "Hunuku", "english": "Move (place)"},
+            {"maori": "Poipoi", "english": "Nurture"},
+            {"maori": "Huaki", "english": "Open"},
+            {"maori": "Pēhi", "english": "Oppress"},
+            {"maori": "Utu", "english": "Pay"},
+            {"maori": "Timotimo", "english": "Peck (bird)"},
+            {"maori": "Waru", "english": "Peel"},
+            {"maori": "Kato", "english": "Pick"},
+            {"maori": "Whakamāhere", "english": "Plan"},
+            {"maori": "Whakaharatau", "english": "Practice"},
+            {"maori": "Oati", "english": "Promise"},
+            {"maori": "Whakahua", "english": "Pronounce"},
+            {"maori": "Rau (atu)", "english": "Put (into something)"},
+            {"maori": "Whakaraupapa", "english": "Put in order"},
+            {"maori": "Kakama", "english": "Quick (Alert)"},
+            {"maori": "Maumahara", "english": "Remember"},
+            {"maori": "Pure", "english": "Remove (tapu)"},
+            {"maori": "Whakatā", "english": "Rest"},
+            {"maori": "Maranga", "english": "Rise up"},
+            {"maori": "Wheoro", "english": "Rumble (Crashing noise - Waves)"},
+            {"maori": "Rakuraku", "english": "Scratch"},
+            {"maori": "Kite", "english": "See"},
+            {"maori": "Hoko (atu)", "english": "Sell"},
+            {"maori": "Pupuhi", "english": "Shoot"},
+            {"maori": "Hāmama", "english": "Shout/Yell"},
+            {"maori": "Hāparangi", "english": "Shout/Yell"},
+            {"maori": "Katikati", "english": "Shuffle (cards)"},
+            {"maori": "Ngongoro", "english": "Snore"},
+            {"maori": "Tiora", "english": "Split open (Shellfish)"},
+            {"maori": "Kōrori", "english": "Stir"},
+            {"maori": "Ngote", "english": "Suck"},
+            {"maori": "Tautoko", "english": "Support"},
+            {"maori": "Horomi", "english": "Swallow"},
+            {"maori": "Kanga", "english": "Swear"},
+            {"maori": "Puruma", "english": "Sweep"},
+            {"maori": "Whakaako", "english": "Teach"},
+            {"maori": "Whakamātautau", "english": "Test/Try"},
+            {"maori": "Whakaaro", "english": "Think"},
+            {"maori": "Whiu", "english": "Throw"},
+            {"maori": "Here", "english": "Tie up"},
+            {"maori": "Whākī atu", "english": "To tell"},
+            {"maori": "Takawiri", "english": "Twist"},
+            {"maori": "Patopato", "english": "Type"},
+            {"maori": "Mārama", "english": "Understand"},
+            {"maori": "Tatari", "english": "Wait"},
+            {"maori": "Minaka", "english": "Want/Desire"},
+            {"maori": "Kōhimuhimu", "english": "Whisper"},
+            {"maori": "Toa", "english": "Win (victorious)"}
+        ];
+
+        let questions = [];
+        let basket = [];
+        let currentIndex = 0;
+        let score = 0;
+        let answered = false;
+        let currentQuizMode = 'choice'; 
+        let isBasketRound = false;
+
+        function showSetupScreen() {
+            basket = [];
+            isBasketRound = false;
+            document.getElementById("review-alert").style.display = "none";
+            document.getElementById("setup-view").style.display = "block";
+            document.getElementById("quiz-box").style.display = "none";
+            document.getElementById("results-box").style.display = "none";
+            document.getElementById("quiz-progress-bar").style.display = "none";
+        }
+
+        function startConfiguredQuiz() {
+            let sectionFilter = document.getElementById("section-filter").value;
+            let directionValue = document.getElementById("quiz-direction").value;
+            let countValue = document.getElementById("question-count").value;
+            
+            let sourcePool = [];
+            if (sectionFilter === "all" || sectionFilter === "action1") {
+                action1Data.forEach(item => sourcePool.push({...item, section: "Action 1"}));
+            }
+            if (sectionFilter === "all" || sectionFilter === "action2") {
+                action2Data.forEach(item => sourcePool.push({...item, section: "Action 2"}));
+            }
+
+            let fullPool = [];
+            sourcePool.forEach(item => {
+                if (directionValue === "all" || directionValue === "eng_ans") {
+                    fullPool.push({ section: item.section, prompt: `What does the word "${item.maori}" mean?`, correct: item.english, type: 'm2e', raw: item });
+                }
+                if (directionValue === "all" || directionValue === "mori_ans") {
+                    fullPool.push({ section: item.section, prompt: `What is the Māori word for "${item.english}"?`, correct: item.maori, type: 'e2m', raw: item });
+                }
+            });
+
+            for (let i = fullPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [fullPool[i], fullPool[j]] = [fullPool[j], fullPool[i]];
+            }
+
+            if (countValue === "all") {
+                questions = fullPool;
+            } else {
+                let targetCount = parseInt(countValue, 10);
+                questions = fullPool.slice(0, targetCount);
+            }
+
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            
+            document.getElementById("setup-view").style.display = "none";
+            document.getElementById("quiz-box").style.display = "block";
+            document.getElementById("quiz-progress-bar").style.display = "block";
+            
+            showQuestion();
+        }
+
+        function startBasketRound() {
+            questions = [...basket];
+            basket = []; 
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            isBasketRound = true;
+
+            document.getElementById("review-alert").style.display = "block";
+            document.getElementById("review-alert").textContent = `🧺 Review Basket: ${questions.length} Items Remaining`;
+            document.getElementById("results-box").style.display = "none";
+            document.getElementById("quiz-box").style.display = "block";
+            document.getElementById("quiz-progress-bar").style.display = "block";
+
+            showQuestion();
+        }
+
+        function switchMode(mode) {
+            currentQuizMode = mode;
+            document.getElementById('mode-choice').classList.toggle('active', mode === 'choice');
+            document.getElementById('mode-text').classList.toggle('active', mode === 'text');
+            if (questions.length > 0 && !answered) {
+                renderCurrentQuestionStructure();
+            }
+        }
+
+        function cleanString(str) {
+            return str.toLowerCase()
+                .replace(/[āa]/g, 'a')
+                .replace(/[ēe]/g, 'e')
+                .replace(/[īi]/g, 'i')
+                .replace(/[ōo]/g, 'o')
+                .replace(/[ūu]/g, 'u')
+                .replace(/\([^)]*\)/g, '') 
+                .replace(/[^a-z0-9]/g, ' ') 
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function checkTextAnswer(userAnswer, correctAnswer) {
+            let userClean = cleanString(userAnswer);
+            let parts = correctAnswer.split(/[=,\/]/);
+            for (let part of parts) {
+                if (part.includes('.')) {
+                    let segmented = part.split('.');
+                    if (segmented[1] && cleanString(segmented[1]) === userClean) return true;
+                }
+                if (cleanString(part) === userClean) return true;
+            }
+            return false;
+        }
+
+        function getDistractors(correctAnswer, type) {
+            let optionsPool = [...action1Data, ...action2Data].map(item => type === 'm2e' ? item.english : item.maori);
+            optionsPool = optionsPool.filter(ans => ans !== correctAnswer);
+            optionsPool.sort(() => 0.5 - Math.random());
+            return [...new Set(optionsPool)].slice(0, 3);
+        }
+
+        function showQuestion() {
+            answered = false;
+            document.getElementById("next-btn").style.display = "none";
+            
+            let currentQ = questions[currentIndex];
+            document.getElementById("tag").textContent = currentQ.section;
+            document.getElementById("question").textContent = `${currentIndex + 1}. ${currentQ.prompt}`;
+            
+            const typedInput = document.getElementById("user-typed-answer");
+            typedInput.value = "";
+            typedInput.disabled = false;
+            document.getElementById("text-feedback").textContent = "";
+            document.getElementById("text-feedback").className = "feedback-msg";
+
+            renderCurrentQuestionStructure();
+            updateUI();
+        }
+
+        function renderCurrentQuestionStructure() {
+            let currentQ = questions[currentIndex];
+            const optionsView = document.getElementById("options-view");
+            const textView = document.getElementById("text-view");
+
+            if (currentQuizMode === 'choice') {
+                optionsView.style.display = "grid";
+                textView.style.display = "none";
+                
+                if (optionsView.innerHTML === "" || answered === false) {
+                    let choices = [currentQ.correct, ...getDistractors(currentQ.correct, currentQ.type)];
+                    choices.sort(() => 0.5 - Math.random());
+                    
+                    optionsView.innerHTML = "";
+                    choices.forEach(choice => {
+                        const button = document.createElement("button");
+                        button.className = "option-btn";
+                        button.textContent = choice;
+                        button.onclick = () => selectOption(button, choice, currentQ.correct);
+                        optionsView.appendChild(button);
+                    });
+                }
+            } else {
+                optionsView.style.display = "none";
+                textView.style.display = "flex";
+                const typedInput = document.getElementById("user-typed-answer");
+                typedInput.focus();
+                
+                typedInput.onkeydown = function(e) {
+                    if (e.key === 'Enter' && !answered) {
+                        submitTextAnswer(typedInput.value, currentQ.correct);
+                    }
+                };
+            }
+        }
+
+        function selectOption(selectedButton, chosenValue, correctAnswer) {
+            if (answered) return;
+            answered = true;
+            let currentQ = questions[currentIndex];
+            
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(btn => {
+                btn.style.cursor = "default";
+                if (btn.textContent === correctAnswer) {
+                    btn.classList.add("correct");
+                }
+            });
+
+            if (chosenValue === correctAnswer) {
+                score++;
+            } else {
+                selectedButton.classList.add("wrong");
+                basket.push(currentQ); 
+            }
+
+            updateUI();
+            document.getElementById("next-btn").style.display = "inline-block";
+        }
+
+        function submitTextAnswer(value, correctAnswer) {
+            answered = true;
+            let currentQ = questions[currentIndex];
+            const feedbackEl = document.getElementById("text-feedback");
+            const typedInput = document.getElementById("user-typed-answer");
+            typedInput.disabled = true;
+
+            if (checkTextAnswer(value, correctAnswer)) {
+                score++;
+                feedbackEl.textContent = "Correct! Kua tika!";
+                feedbackEl.className = "feedback-msg correct";
+            } else {
+                feedbackEl.textContent = `Incorrect. Target answer: ${correctAnswer}`;
+                feedbackEl.className = "feedback-msg wrong";
+                basket.push(currentQ); 
+            }
+
+            updateUI();
+            document.getElementById("next-btn").style.display = "inline-block";
+            document.getElementById("next-btn").focus();
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById("score-tracker").textContent = `Score: ${score}/${currentIndex + (answered ? 1 : 0)}`;
+            const progressPercent = ((currentIndex) / questions.length) * 100;
+            document.getElementById("progress").style.width = `${progressPercent}%`;
+        }
+
+        function showResults() {
+            document.getElementById("quiz-box").style.display = "none";
+            document.getElementById("results-box").style.display = "block";
+            document.getElementById("quiz-progress-bar").style.display = "none";
+            
+            document.getElementById("final-score").textContent = `${score} / ${questions.length}`;
+            
+            const basketBtn = document.getElementById("basket-btn");
+            
+            if (basket.length > 0) {
+                basketBtn.style.display = "inline-block";
+                basketBtn.textContent = `Review Basket (${basket.length} Missed Words)`;
+                document.getElementById("feedback-text").innerHTML = `Good effort! You got <strong>${score}</strong> right. Let's practice the terms inside your review basket next to lock them down.`;
+            } else {
+                basketBtn.style.display = "none";
+                document.getElementById("review-alert").style.display = "none";
+                if (isBasketRound) {
+                    document.getElementById("feedback-text").innerHTML = "<strong>Awesome job!</strong> You cleared your basket and mastered all your targets! Kia mau te wehi!";
+                } else {
+                    document.getElementById("feedback-text").innerHTML = "<strong>Kia mau te wehi!</strong> A flawless performance on the first try!";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
